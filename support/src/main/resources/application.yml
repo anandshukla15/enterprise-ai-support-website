@@ -18,7 +18,9 @@ spring:
   flyway:
     enabled: true
 
-
+  docker:
+    compose:
+      enabled: false
 
 server:
   port: 8080

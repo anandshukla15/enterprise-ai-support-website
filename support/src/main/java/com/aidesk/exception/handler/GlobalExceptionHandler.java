@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.<Map<String,String>>builder()
                         .success(false)
                         .message("Validation failsed")
-                        .data(null).build());
+                        .data(errors).build());
 
     }
 

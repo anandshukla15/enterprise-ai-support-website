@@ -1,4 +1,7 @@
 package com.aidesk.exception.custom;
 
-public class ResourceNotFoundException {
+public class ResourceNotFoundException extends RuntimeException{
+    public ResourceNotFoundException(String message){
+        super(message);
+    }
 }

@@ -1,11 +1,15 @@
 package com.aidesk.company.entity;
 
 import com.aidesk.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+
+@Entity
+@Table(name = "companies")
+@Getter
+@Setter
 public class Company extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

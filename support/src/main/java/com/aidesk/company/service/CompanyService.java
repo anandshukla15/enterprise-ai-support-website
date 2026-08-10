@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
@@ -50,6 +52,16 @@ public class CompanyService {
                 );
 
         return companyMapper.toResponse(company);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<CompanyResponse> getAllCompanies() {
+
+        return companyRepository.findAll()
+                .stream()
+                .map(companyMapper::toResponse)
+                .toList();
     }
 
 }

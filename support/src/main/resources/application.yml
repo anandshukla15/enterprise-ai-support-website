@@ -26,6 +26,12 @@ server:
   port: 8080
 
 
+app:
+  jwt:
+    secret: 1234567890
+    expiration: 900000
+    refresh-expiration: 604800000
+
 logging:
   level:
     org.hibernate.SQL: debug

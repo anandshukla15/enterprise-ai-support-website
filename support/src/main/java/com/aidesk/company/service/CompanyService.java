@@ -7,6 +7,7 @@ import com.aidesk.company.entity.Company;
 import com.aidesk.company.mapper.CompanyMapper;
 import com.aidesk.company.repository.CompanyRepository;
 import com.aidesk.exception.custom.DuplicateResourceException;
+import com.aidesk.exception.custom.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,20 @@ public class CompanyService {
         Company savedCompany = companyRepository.save(company);
 
         return companyMapper.toResponse(savedCompany);
+    }
+
+
+    @Transactional(readOnly = true)
+    public CompanyResponse getCompanyById(Long id) {
+
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Company not found with id: " + id
+                        )
+                );
+
+        return companyMapper.toResponse(company);
     }
 
 }

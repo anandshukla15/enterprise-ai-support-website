@@ -30,7 +30,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/health",
-                                "/api/companies/**","/api/auth/register",
+                                "/api/auth/register",
                                 "/api/auth/login",
                                 "/api/auth/refresh"
                         ).permitAll()

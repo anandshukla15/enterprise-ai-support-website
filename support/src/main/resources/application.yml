@@ -28,7 +28,7 @@ server:
 
 app:
   jwt:
-    secret: 1234567890
+    secret: "aVeryLongRandomSecretKeyForAiDeskJwtAuthentication2026Secure"
     expiration: 900000
     refresh-expiration: 604800000
 

@@ -3,14 +3,18 @@ package com.aidesk.user.controller;
 
 import com.aidesk.common.dto.ApiResponse;
 import com.aidesk.common.enums.Role;
+import com.aidesk.security.service.CurrentUserService;
 import com.aidesk.user.dto.CreateUserRequest;
 import com.aidesk.user.dto.UserResponse;
+import com.aidesk.user.entity.User;
+import com.aidesk.user.mapper.UserMapper;
 import com.aidesk.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +25,8 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final CurrentUserService currentUserService;
+    private final UserMapper userMapper;
 
     @PostMapping("/company/{companyId}")
     @PreAuthorize("hasRole('COMPANY_ADMIN')")
@@ -119,6 +125,27 @@ public class UserController {
                         .data(response)
                         .build()
         );
+    }
+
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(
+            Authentication authentication) {
+
+        User user =
+                currentUserService.getCurrentUser(authentication);
+
+        UserResponse response =
+                userMapper.toResponse(user);
+
+        return ResponseEntity.ok(
+                ApiResponse.<UserResponse>builder()
+                        .success(true)
+                        .message("Current user fetched successfully")
+                        .data(response)
+                        .build()
+        );
+
     }
 
 }

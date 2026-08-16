@@ -14,5 +14,42 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class RestAccessDeniedHandler {
+public class RestAccessDeniedHandler implements  AccessDeniedHandler {
+
+    private final ObjectMapper objectMapper;
+
+    public RestAccessDeniedHandler(
+            ObjectMapper objectMapper) {
+
+        this.objectMapper = objectMapper;
+    }
+
+
+
+    @Override
+    public void handle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AccessDeniedException accessDeniedException)
+            throws IOException {
+
+        response.setStatus(
+                HttpServletResponse.SC_FORBIDDEN
+        );
+
+        response.setContentType(
+                MediaType.APPLICATION_JSON_VALUE
+        );
+
+        ApiResponse<Void> body =
+                ApiResponse.<Void>builder()
+                        .success(false)
+                        .message("Access denied")
+                        .data(null)
+                        .build();
+
+        response.getWriter().write(
+                objectMapper.writeValueAsString(body)
+        );
+    }
 }

@@ -1,6 +1,7 @@
 package com.aidesk.security.service;
 
 import com.aidesk.user.entity.User;
+import com.aidesk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class TenantSecurityService {
 
     private final CurrentUserService currentUserService;
+    private final UserRepository userRepository;
 
     public boolean hasAccessToCompany(
             Long companyId,

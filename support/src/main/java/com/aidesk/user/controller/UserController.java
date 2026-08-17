@@ -29,7 +29,10 @@ public class UserController {
     private final UserMapper userMapper;
 
     @PostMapping("/company/{companyId}")
-    @PreAuthorize("hasRole('COMPANY_ADMIN')")
+    @PreAuthorize(
+            "hasRole('COMPANY_ADMIN') && " +
+                    "@tenantSecurityService.hasAccessToCompany(#companyId, authentication)"
+    )
     public ResponseEntity<ApiResponse<UserResponse>> createUser(
             @PathVariable Long companyId,
             @Valid @RequestBody CreateUserRequest request) {
@@ -52,7 +55,10 @@ public class UserController {
     }
 
     @GetMapping("/company/{companyId}")
-    @PreAuthorize("hasRole('COMPANY_ADMIN')")
+    @PreAuthorize(
+            "hasRole('COMPANY_ADMIN') && " +
+                    "@tenantSecurityService.hasAccessToCompany(#companyId, authentication)"
+    )
     public ResponseEntity<ApiResponse<List<UserResponse>>>
     getCompanyUsers(
             @PathVariable Long companyId) {
@@ -70,7 +76,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('COMPANY_ADMIN')")
+    @PreAuthorize(
+            "hasRole('COMPANY_ADMIN') && " +
+                    "@tenantSecurityService.hasAccessToCompany(#companyId, authentication)"
+    )
     public ResponseEntity<ApiResponse<UserResponse>>
     getUser(@PathVariable Long id) {
 
@@ -87,7 +96,10 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/role")
-    @PreAuthorize("hasRole('COMPANY_ADMIN')")
+    @PreAuthorize(
+            "hasRole('COMPANY_ADMIN') && " +
+                    "@tenantSecurityService.hasAccessToCompany(#companyId, authentication)"
+    )
     public ResponseEntity<ApiResponse<UserResponse>>
     updateRole(
             @PathVariable Long id,
@@ -106,7 +118,10 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasRole('COMPANY_ADMIN')")
+    @PreAuthorize(
+            "hasRole('COMPANY_ADMIN') && " +
+                    "@tenantSecurityService.hasAccessToCompany(#companyId, authentication)"
+    )
     public ResponseEntity<ApiResponse<UserResponse>>
     updateStatus(
             @PathVariable Long id,

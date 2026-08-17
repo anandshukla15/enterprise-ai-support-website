@@ -6,10 +6,15 @@ import com.aidesk.auth.dto.RefreshTokenRequest;
 import com.aidesk.auth.dto.RegisterRequest;
 import com.aidesk.auth.service.AuthService;
 import com.aidesk.common.dto.ApiResponse;
+import com.aidesk.security.service.CurrentUserService;
+import com.aidesk.user.dto.UserResponse;
+import com.aidesk.user.entity.User;
+import com.aidesk.user.mapper.UserMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final CurrentUserService currentUserService;
+    private final UserMapper userMapper;
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(
@@ -80,6 +87,22 @@ public class AuthController {
                         .success(true)
                         .message("Logout successful")
                         .data(null)
+                        .build()
+        );
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponse>> me(
+            Authentication authentication) {
+
+        User user =
+                currentUserService.getCurrentUser(authentication);
+
+        return ResponseEntity.ok(
+                ApiResponse.<UserResponse>builder()
+                        .success(true)
+                        .message("Current user")
+                        .data(userMapper.toResponse(user))
                         .build()
         );
     }

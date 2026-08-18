@@ -1,6 +1,7 @@
 package com.aidesk.exception.handler;
 
 import com.aidesk.common.dto.ApiResponse;
+import com.aidesk.exception.custom.BadRequestException;
 import com.aidesk.exception.custom.DuplicateResourceException;
 import com.aidesk.exception.custom.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -67,6 +68,18 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.<Void>builder()
                         .success(false)
                         .message("Something went wrong")
+                        .data(null)
+                        .build());
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadRequest(
+            BadRequestException exception) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.<Void>builder()
+                        .success(false)
+                        .message(exception.getMessage())
                         .data(null)
                         .build());
     }

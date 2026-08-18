@@ -78,7 +78,7 @@ public class UserController {
     @GetMapping("/{id}")
     @PreAuthorize(
             "hasRole('COMPANY_ADMIN') && " +
-                    "@tenantSecurityService.hasAccessToCompany(#companyId, authentication)"
+                    "@tenantSecurityService.hasAccessToUser(#id, authentication)"
     )
     public ResponseEntity<ApiResponse<UserResponse>>
     getUser(@PathVariable Long id) {
@@ -98,7 +98,7 @@ public class UserController {
     @PatchMapping("/{id}/role")
     @PreAuthorize(
             "hasRole('COMPANY_ADMIN') && " +
-                    "@tenantSecurityService.hasAccessToCompany(#companyId, authentication)"
+                    "@tenantSecurityService.hasAccessToUser(#id, authentication)"
     )
     public ResponseEntity<ApiResponse<UserResponse>>
     updateRole(

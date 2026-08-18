@@ -28,4 +28,21 @@ public class TenantSecurityService {
                 .getId()
                 .equals(companyId);
     }
+
+    public boolean hasAccessToUser(
+            Long userId,
+            Authentication authentication) {
+
+        User currentUser =
+                currentUserService.getCurrentUser(authentication);
+
+        return userRepository.findById(userId)
+                .map(targetUser ->
+                        currentUser.getCompany() != null &&
+                                targetUser.getCompany() != null &&
+                                currentUser.getCompany().getId()
+                                        .equals(targetUser.getCompany().getId())
+                )
+                .orElse(false);
+    }
 }

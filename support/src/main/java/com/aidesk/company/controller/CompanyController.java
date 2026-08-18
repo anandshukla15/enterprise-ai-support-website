@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @PostMapping
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<CompanyResponse>> createCompany(
             @Valid @RequestBody CreateCompanyRequest request) {
 
@@ -38,6 +40,10 @@ public class CompanyController {
 
 
     @GetMapping("/{id}")
+    @PreAuthorize(
+            "hasRole('SUPER_ADMIN') or " +
+                    "@tenantSecurityService.hasAccessToCompany(#id, authentication)"
+    )
     public ResponseEntity<ApiResponse<CompanyResponse>> getCompany(
             @PathVariable Long id) {
 
@@ -56,6 +62,7 @@ public class CompanyController {
 
 
     @GetMapping
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<List<CompanyResponse>>> getAllCompanies() {
 
         List<CompanyResponse> companies =

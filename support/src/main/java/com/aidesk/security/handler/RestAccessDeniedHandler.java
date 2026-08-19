@@ -10,18 +10,19 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 
 @Component
 public class RestAccessDeniedHandler implements  AccessDeniedHandler {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     public RestAccessDeniedHandler(
-            ObjectMapper objectMapper) {
+            JsonMapper jsonMapper) {
 
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
     }
 
 
@@ -49,7 +50,7 @@ public class RestAccessDeniedHandler implements  AccessDeniedHandler {
                         .build();
 
         response.getWriter().write(
-                objectMapper.writeValueAsString(body)
+                jsonMapper.writeValueAsString(body)
         );
     }
 }

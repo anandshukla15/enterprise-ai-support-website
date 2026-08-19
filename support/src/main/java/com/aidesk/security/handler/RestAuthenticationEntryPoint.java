@@ -2,25 +2,25 @@ package com.aidesk.security.handler;
 
 
 import com.aidesk.common.dto.ApiResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
-    public RestAuthenticationEntryPoint(
-            ObjectMapper objectMapper) {
-
-        this.objectMapper = objectMapper;
+    public RestAuthenticationEntryPoint(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
                         .build();
 
         response.getWriter().write(
-                objectMapper.writeValueAsString(body)
+                jsonMapper.writeValueAsString(body)
         );
     }
 

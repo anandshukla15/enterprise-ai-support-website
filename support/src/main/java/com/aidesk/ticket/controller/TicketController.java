@@ -126,4 +126,22 @@ public class TicketController {
                         .build()
         );
     }
+
+    @GetMapping("/{id}/assignments")
+    public ResponseEntity<ApiResponse<List<TicketAssignmentResponse>>>
+    getAssignmentHistory(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<TicketAssignmentResponse>>builder()
+                        .success(true)
+                        .message("Ticket assignment history fetched successfully")
+                        .data(ticketService.getAssignmentHistory(
+                                id,
+                                authentication
+                        ))
+                        .build()
+        );
+    }
 }

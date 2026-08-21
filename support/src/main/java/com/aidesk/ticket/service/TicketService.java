@@ -20,6 +20,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.aidesk.ticket.dto.TicketAssignmentResponse;
+import com.aidesk.ticket.entity.TicketAssignment;
+import com.aidesk.ticket.mapper.TicketAssignmentMapper;
+import com.aidesk.ticket.repository.TicketAssignmentRepository;
 
 import java.util.List;
 
@@ -32,6 +36,8 @@ public class TicketService {
     private final UserRepository userRepository;
     private final TicketMapper ticketMapper;
     private final CurrentUserService currentUserService;
+    private final TicketAssignmentRepository ticketAssignmentRepository;
+    private final TicketAssignmentMapper ticketAssignmentMapper;
 
     @Transactional
     public TicketResponse createTicket(
@@ -89,6 +95,7 @@ public class TicketService {
         );
     }
 
+
     @Transactional
     public TicketResponse assignTicket(
             Long ticketId,
@@ -96,6 +103,9 @@ public class TicketService {
             Authentication authentication) {
 
         Company company = getCurrentCompany(authentication);
+
+        User assignedBy =
+                currentUserService.getCurrentUser(authentication);
 
         Ticket ticket = getTicketForCurrentCompany(
                 ticketId,
@@ -123,7 +133,16 @@ public class TicketService {
             ticket.setStatus(TicketStatus.IN_PROGRESS);
         }
 
-        return ticketMapper.toResponse(ticketRepository.save(ticket));
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        TicketAssignment assignment = new TicketAssignment();
+        assignment.setTicket(savedTicket);
+        assignment.setAssignedAgent(agent);
+        assignment.setAssignedBy(assignedBy);
+
+        ticketAssignmentRepository.save(assignment);
+
+        return ticketMapper.toResponse(savedTicket);
     }
 
     @Transactional
@@ -183,5 +202,22 @@ public class TicketService {
         }
 
         return user.getCompany();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TicketAssignmentResponse> getAssignmentHistory(
+            Long ticketId,
+            Authentication authentication) {
+
+        Ticket ticket = getTicketForCurrentCompany(
+                ticketId,
+                authentication
+        );
+
+        return ticketAssignmentRepository
+                .findByTicketIdOrderByCreatedAtDesc(ticket.getId())
+                .stream()
+                .map(ticketAssignmentMapper::toResponse)
+                .toList();
     }
 }

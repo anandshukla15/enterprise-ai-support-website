@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.aidesk.customer.dto.LinkCustomerUserRequest;
 
 import java.util.List;
 
@@ -78,6 +79,26 @@ public class CustomerController {
                         .success(true)
                         .message("Customer updated successfully")
                         .data(customerService.updateCustomer(
+                                id,
+                                request,
+                                authentication
+                        ))
+                        .build()
+        );
+    }
+
+    @PostMapping("/{id}/link-user")
+    @PreAuthorize("hasRole('COMPANY_ADMIN')")
+    public ResponseEntity<ApiResponse<CustomerResponse>> linkUser(
+            @PathVariable Long id,
+            @Valid @RequestBody LinkCustomerUserRequest request,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(
+                ApiResponse.<CustomerResponse>builder()
+                        .success(true)
+                        .message("Customer linked to user successfully")
+                        .data(customerService.linkUser(
                                 id,
                                 request,
                                 authentication

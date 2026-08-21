@@ -16,6 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import com.aidesk.common.enums.Role;
+import com.aidesk.customer.dto.LinkCustomerUserRequest;
+import com.aidesk.exception.custom.BadRequestException;
+import com.aidesk.user.entity.User;
+import com.aidesk.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
     private final CurrentUserService currentUserService;
+    private final UserRepository userRepository;
 
     @Transactional
     public CustomerResponse createCustomer(
@@ -131,6 +137,48 @@ public class CustomerService {
         }
 
         return user.getCompany();
+    }
+
+    @Transactional
+    public CustomerResponse linkUser(
+            Long customerId,
+            LinkCustomerUserRequest request,
+            Authentication authentication) {
+
+        Company company = getCurrentCompany(authentication);
+
+        Customer customer = customerRepository
+                .findByIdAndCompanyId(customerId, company.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Customer not found"
+                ));
+
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found"
+                ));
+
+        if (user.getCompany() == null
+                || !user.getCompany().getId().equals(company.getId())
+                || user.getRole() != Role.CUSTOMER
+                || !user.isEnabled()) {
+
+            throw new BadRequestException(
+                    "User must be an active CUSTOMER in your company"
+            );
+        }
+
+        if (customerRepository.existsByUserId(user.getId())) {
+            throw new BadRequestException(
+                    "This user is already linked to another customer"
+            );
+        }
+
+        customer.setUser(user);
+
+        return customerMapper.toResponse(
+                customerRepository.save(customer)
+        );
     }
 
 }

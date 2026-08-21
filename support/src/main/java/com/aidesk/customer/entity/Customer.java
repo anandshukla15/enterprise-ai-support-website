@@ -2,6 +2,7 @@ package com.aidesk.customer.entity;
 
 import com.aidesk.common.entity.BaseEntity;
 import com.aidesk.company.entity.Company;
+import com.aidesk.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,4 +38,8 @@ public class Customer extends BaseEntity {
 
     @Column(length = 30)
     private String phone;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", unique = true)
+    private User user;
 }

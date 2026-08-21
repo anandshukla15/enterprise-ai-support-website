@@ -9,4 +9,8 @@ public interface TicketCommentRepository
         extends JpaRepository<TicketComment, Long> {
 
     List<TicketComment> findByTicketIdOrderByCreatedAtAsc(Long ticketId);
+
+    List<TicketComment> findByTicketIdAndInternalNoteFalseOrderByCreatedAtAsc(
+            Long ticketId
+    );
 }

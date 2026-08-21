@@ -13,4 +13,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Optional<Customer> findByIdAndCompanyId(Long id, Long companyId);
 
     List<Customer> findByCompanyId(Long companyId);
+    Optional<Customer> findByUserIdAndCompanyId(
+            Long userId,
+            Long companyId
+    );
+
+    boolean existsByUserId(Long userId);
 }

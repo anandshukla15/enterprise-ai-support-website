@@ -22,4 +22,15 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
             Long agentId,
             Long companyId
     );
+
+    List<Ticket> findByCustomerIdAndCompanyIdOrderByCreatedAtDesc(
+            Long customerId,
+            Long companyId
+    );
+
+    Optional<Ticket> findByIdAndCustomerIdAndCompanyId(
+            Long ticketId,
+            Long customerId,
+            Long companyId
+    );
 }
